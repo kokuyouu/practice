@@ -1,0 +1,17 @@
+# Локальные настройки IDE и ОС
+.idea/
+*.iml
+.DS_Store
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+# Java
+*.class
+build/
+out/
+target/
+# Временные файлы Word
+~$*.docx
