@@ -5,37 +5,37 @@
       <root>
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
-        <mxCell id="clients" value="Клиент — clients&#10;PK id&#10;name&#10;contact" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="clients" value="Клиент — clients" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="50" width="280" height="145" as="geometry"/>
         </mxCell>
-        <mxCell id="orders" value="Заказ — orders&#10;PK id&#10;FK client_id&#10;title, goal, audience&#10;format, contact&#10;budget, deadline, status" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="orders" value="Заказ — orders" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="50" width="340" height="210" as="geometry"/>
         </mxCell>
-        <mxCell id="members" value="Участие — order_members&#10;PK, FK order_id&#10;PK, FK employee_id&#10;project_role" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="members" value="Участие — order_members" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="50" width="330" height="145" as="geometry"/>
         </mxCell>
-        <mxCell id="employees" value="Сотрудник — employees&#10;PK id&#10;name&#10;specialty" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="employees" value="Сотрудник — employees" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="1350" y="50" width="320" height="145" as="geometry"/>
         </mxCell>
-        <mxCell id="stages" value="Этап — stages&#10;PK id&#10;FK order_id&#10;name&#10;status" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="stages" value="Этап — stages" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="380" width="340" height="175" as="geometry"/>
         </mxCell>
-        <mxCell id="tasks" value="Задача — tasks&#10;PK id&#10;FK stage_id&#10;FK employee_id&#10;FK comment_id (необяз.)&#10;title, deadline&#10;status, required" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="tasks" value="Задача — tasks" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="380" width="330" height="245" as="geometry"/>
         </mxCell>
-        <mxCell id="links" value="Результат задачи — task_materials&#10;PK, FK task_id&#10;PK, FK material_id" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="links" value="Результат задачи — task_materials" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="1320" y="760" width="380" height="125" as="geometry"/>
         </mxCell>
-        <mxCell id="materials" value="Материал — materials&#10;PK id&#10;FK stage_id&#10;name" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="materials" value="Материал — materials" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="760" width="340" height="150" as="geometry"/>
         </mxCell>
-        <mxCell id="versions" value="Версия — material_versions&#10;PK id&#10;FK material_id&#10;number (AK с material_id)&#10;url&#10;review_status" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="versions" value="Версия — material_versions" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="1040" width="340" height="210" as="geometry"/>
         </mxCell>
-        <mxCell id="approvals" value="Согласование — approvals&#10;PK id&#10;FK version_id&#10;decision&#10;decided_on" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="approvals" value="Согласование — approvals" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="40" y="1040" width="300" height="175" as="geometry"/>
         </mxCell>
-        <mxCell id="comments" value="Замечание — comments&#10;PK id&#10;FK version_id&#10;text&#10;status" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;" vertex="1" parent="1">
+        <mxCell id="comments" value="Замечание — comments" style="swimlane;startSize=34;horizontal=1;whiteSpace=wrap;html=0;fillColor=#ffffff;strokeColor=#222222;fontColor=#111111;fontFamily=Arial;fontSize=21;align=left;spacingLeft=12;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="900" y="1040" width="330" height="175" as="geometry"/>
         </mxCell>
         <mxCell id="edge_0" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#444444;fontSize=18;labelBackgroundColor=#ffffff;startArrow=ERone;endArrow=ERzeroToMany;" edge="1" parent="1" source="clients" target="orders">
@@ -103,16 +103,16 @@
             <Array as="points"/>
           </mxGeometry>
         </mxCell>
-        <mxCell id="edge_12" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#444444;fontSize=18;labelBackgroundColor=#ffffff;startArrow=ERzeroToOne;endArrow=ERzeroToMany;" edge="1" parent="1" source="comments" target="tasks">
+        <mxCell id="edge_12" value="" style="edgeStyle=none;rounded=0;html=0;strokeColor=#444444;fontSize=18;labelBackgroundColor=#ffffff;startArrow=ERzeroToOne;endArrow=ERzeroToMany;exitX=1;exitY=0.5;entryX=0.6666667;entryY=1;" edge="1" parent="1" source="comments" target="tasks">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
-              <mxPoint x="1280" y="1040"/>
+              <mxPoint x="1280" y="1127"/>
               <mxPoint x="1280" y="670"/>
               <mxPoint x="1120" y="670"/>
             </Array>
           </mxGeometry>
         </mxCell>
-      </root>
+      <mxCell id="clients_attributes" value="PK id&#10;name&#10;contact" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="clients"><mxGeometry x="0" y="34" width="280.0" height="111.0" as="geometry"/></mxCell><mxCell id="orders_attributes" value="PK id&#10;FK client_id&#10;title, goal, audience&#10;format, contact&#10;budget, deadline, status" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="orders"><mxGeometry x="0" y="34" width="340.0" height="176.0" as="geometry"/></mxCell><mxCell id="members_attributes" value="PK, FK order_id&#10;PK, FK employee_id&#10;project_role" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="members"><mxGeometry x="0" y="34" width="330.0" height="111.0" as="geometry"/></mxCell><mxCell id="employees_attributes" value="PK id&#10;name&#10;specialty" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="employees"><mxGeometry x="0" y="34" width="320.0" height="111.0" as="geometry"/></mxCell><mxCell id="stages_attributes" value="PK id&#10;FK order_id&#10;name&#10;status" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="stages"><mxGeometry x="0" y="34" width="340.0" height="141.0" as="geometry"/></mxCell><mxCell id="tasks_attributes" value="PK id&#10;FK stage_id&#10;FK employee_id&#10;FK comment_id (необяз.)&#10;title, deadline&#10;status, required" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="tasks"><mxGeometry x="0" y="34" width="330.0" height="211.0" as="geometry"/></mxCell><mxCell id="links_attributes" value="PK, FK task_id&#10;PK, FK material_id" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="links"><mxGeometry x="0" y="34" width="380.0" height="91.0" as="geometry"/></mxCell><mxCell id="materials_attributes" value="PK id&#10;FK stage_id&#10;name" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="materials"><mxGeometry x="0" y="34" width="340.0" height="116.0" as="geometry"/></mxCell><mxCell id="versions_attributes" value="PK id&#10;FK material_id&#10;number (AK с material_id)&#10;url&#10;review_status" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="versions"><mxGeometry x="0" y="34" width="340.0" height="176.0" as="geometry"/></mxCell><mxCell id="approvals_attributes" value="PK id&#10;FK version_id&#10;decision&#10;decided_on" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="approvals"><mxGeometry x="0" y="34" width="300.0" height="141.0" as="geometry"/></mxCell><mxCell id="comments_attributes" value="PK id&#10;FK version_id&#10;text&#10;status" style="text;html=0;whiteSpace=wrap;align=left;verticalAlign=top;spacingTop=10;spacingLeft=12;strokeColor=none;fillColor=none;fontFamily=Arial;fontSize=21;fontColor=#111111;" vertex="1" parent="comments"><mxGeometry x="0" y="34" width="330.0" height="141.0" as="geometry"/></mxCell></root>
     </mxGraphModel>
   </diagram>
 </mxfile>

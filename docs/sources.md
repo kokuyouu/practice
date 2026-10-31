@@ -37,3 +37,11 @@
 18. Brengman, M. Customer Engagement in Multi-Sensory Virtual Reality Advertising: The Effect of Sound and Scent Congruence / M. Brengman, K. Willems, L. De Gauquier // Frontiers in Psychology. – 2022. – Vol. 13. – Art. 747456. – DOI 10.3389/fpsyg.2022.747456. – URL: https://doi.org/10.3389/fpsyg.2022.747456 (дата обращения: 06.10.2026).
 
 19. Chen, C. Strategic use of immersive media and narrative message in virtual marketing: Understanding the roles of telepresence and transportation / C. Chen, M. Z. Yao // Psychology & Marketing. – 2022. – Vol. 39, No. 3. – P. 524–542. – DOI 10.1002/mar.21630. – URL: https://doi.org/10.1002/mar.21630 (дата обращения: 06.10.2026).
+
+20. Business Process Model and Notation (BPMN), Version 2.0.2 / Object Management Group. – 2014. – URL: https://www.omg.org/spec/BPMN/2.0.2 (дата обращения: 31.10.2026).
+
+21. ГОСТ 19.701-90 (ИСО 5807-85). Единая система программной документации. Схемы алгоритмов, программ, данных и систем. Обозначения условные и правила выполнения. – 1990. – URL: https://rosgosts.ru/file/gost/01/080/gost_19.701-90.pdf (дата обращения: 31.10.2026).
+
+22. Нестеров, С. А. Базы данных : учебник и практикум для вузов / С. А. Нестеров. – 2-е изд., перераб. и доп. – Москва : Юрайт, 2024. – 258 с. – ISBN 978-5-534-18107-4. – URL: https://urait.ru/bcode/536687 (дата обращения: 31.10.2026).
+
+23. Дискретная математика: прикладные задачи и сложность алгоритмов : учебник и практикум для вузов / А. Е. Андреев, А. А. Болотов, К. В. Коляда, А. Б. Фролов. – 2-е изд., испр. и доп. – Москва : Юрайт, 2024. – 317 с. – ISBN 978-5-534-04246-7. – URL: https://urait.ru/bcode/539083 (дата обращения: 31.10.2026).
