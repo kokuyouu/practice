@@ -1,0 +1,232 @@
+{
+  "clients": [
+    {
+      "id": "C1",
+      "name": "Музей «Город»",
+      "contact": "office@museum.example"
+    },
+    {
+      "id": "C2",
+      "name": "Бренд «Сфера»",
+      "contact": "office@sfera.example"
+    }
+  ],
+  "orders": [
+    {
+      "id": "O1",
+      "client_id": "C1",
+      "title": "Интерактивная инсталляция «История города»",
+      "goal": "Познакомить посетителей с историей района",
+      "audience": "Посетители музея от 12 лет",
+      "format": "Интерактивная инсталляция",
+      "contact": "curator@museum.example",
+      "budget": 350000,
+      "deadline": "2026-11-03",
+      "status": "in_progress"
+    },
+    {
+      "id": "O2",
+      "client_id": "C2",
+      "title": "Виртуальный шоурум новой коллекции",
+      "goal": "Презентовать новую коллекцию",
+      "audience": "",
+      "format": "Виртуальный шоурум",
+      "contact": "marketing@sfera.example",
+      "budget": 180000,
+      "deadline": "",
+      "status": "new"
+    }
+  ],
+  "employees": [
+    {
+      "id": "E1",
+      "name": "Анна Орлова",
+      "specialty": "Дизайн"
+    },
+    {
+      "id": "E2",
+      "name": "Илья Соколов",
+      "specialty": "Разработка"
+    },
+    {
+      "id": "E3",
+      "name": "Олег Миронов",
+      "specialty": "Управление проектами"
+    }
+  ],
+  "order_members": [
+    {
+      "order_id": "O1",
+      "employee_id": "E1",
+      "project_role": "Дизайнер"
+    },
+    {
+      "order_id": "O1",
+      "employee_id": "E2",
+      "project_role": "Разработчик"
+    },
+    {
+      "order_id": "O1",
+      "employee_id": "E3",
+      "project_role": "Менеджер"
+    },
+    {
+      "order_id": "O2",
+      "employee_id": "E1",
+      "project_role": "Дизайнер"
+    },
+    {
+      "order_id": "O2",
+      "employee_id": "E3",
+      "project_role": "Менеджер"
+    }
+  ],
+  "stages": [
+    {
+      "id": "S1",
+      "order_id": "O1",
+      "name": "Подготовка концепции",
+      "status": "in_progress"
+    },
+    {
+      "id": "S2",
+      "order_id": "O1",
+      "name": "Производство инсталляции",
+      "status": "in_progress"
+    },
+    {
+      "id": "S3",
+      "order_id": "O2",
+      "name": "Уточнение брифа",
+      "status": "planned"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "T1",
+      "stage_id": "S1",
+      "employee_id": "E1",
+      "title": "Подготовить концепцию",
+      "deadline": "2026-10-25",
+      "status": "done",
+      "required": true
+    },
+    {
+      "id": "T2",
+      "stage_id": "S1",
+      "employee_id": "E2",
+      "title": "Оценить техническую реализуемость",
+      "deadline": "2026-10-26",
+      "status": "done",
+      "required": true
+    },
+    {
+      "id": "T3",
+      "stage_id": "S2",
+      "employee_id": "E2",
+      "title": "Исправить интерактивный прототип",
+      "deadline": "2026-10-30",
+      "status": "in_progress",
+      "required": true,
+      "comment_id": "CM2"
+    },
+    {
+      "id": "T4",
+      "stage_id": "S2",
+      "employee_id": "E1",
+      "title": "Подготовить дополнительную анимацию",
+      "deadline": "2026-10-31",
+      "status": "todo",
+      "required": false
+    },
+    {
+      "id": "T5",
+      "stage_id": "S3",
+      "employee_id": "E3",
+      "title": "Уточнить аудиторию и срок",
+      "deadline": "2026-10-29",
+      "status": "todo",
+      "required": true
+    }
+  ],
+  "materials": [
+    {
+      "id": "M1",
+      "stage_id": "S1",
+      "name": "Презентация концепции"
+    },
+    {
+      "id": "M2",
+      "stage_id": "S2",
+      "name": "Интерактивный прототип"
+    },
+    {
+      "id": "M3",
+      "stage_id": "S3",
+      "name": "Уточнённый бриф"
+    }
+  ],
+  "material_versions": [
+    {
+      "id": "V1",
+      "material_id": "M1",
+      "number": 1,
+      "url": "https://files.example/concept-v1.pdf",
+      "review_status": "passed"
+    },
+    {
+      "id": "V2",
+      "material_id": "M1",
+      "number": 2,
+      "url": "https://files.example/concept-v2.pdf",
+      "review_status": "passed"
+    },
+    {
+      "id": "V3",
+      "material_id": "M2",
+      "number": 1,
+      "url": "https://files.example/prototype-v1.zip",
+      "review_status": "failed"
+    }
+  ],
+  "task_materials": [
+    {
+      "task_id": "T1",
+      "material_id": "M1"
+    },
+    {
+      "task_id": "T2",
+      "material_id": "M1"
+    },
+    {
+      "task_id": "T3",
+      "material_id": "M2"
+    },
+    {
+      "task_id": "T5",
+      "material_id": "M3"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "A1",
+      "version_id": "V1",
+      "decision": "changes_requested",
+      "decided_on": "2026-10-24"
+    }
+  ],
+  "comments": [
+    {
+      "id": "CM1",
+      "version_id": "V1",
+      "text": "Уточнить цветовую палитру",
+      "status": "resolved"
+    },
+    {
+      "id": "CM2",
+      "version_id": "V3",
+      "text": "Кнопка запуска не реагирует на нажатие",
+      "status": "open"
+    }
+  ]
+}
