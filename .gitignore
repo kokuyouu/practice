@@ -15,3 +15,6 @@ out/
 target/
 # Временные файлы Word
 ~$*.docx
+
+# Локально скачанные библиотеки Java
+/src/java/lib/

@@ -1,0 +1,224 @@
+{
+  "brief": {
+    "order_id": "O1",
+    "complete": true,
+    "errors": []
+  },
+  "readiness": [
+    {
+      "stage_id": "S1",
+      "order_id": "O1",
+      "ready": true,
+      "required_tasks": 2,
+      "checked_materials": 1,
+      "versions": [
+        {
+          "material_id": "M1",
+          "version_id": "V2"
+        }
+      ],
+      "blockers": []
+    },
+    {
+      "stage_id": "S2",
+      "order_id": "O1",
+      "ready": false,
+      "required_tasks": 1,
+      "checked_materials": 1,
+      "versions": [
+        {
+          "material_id": "M2",
+          "version_id": "V3"
+        }
+      ],
+      "blockers": [
+        "Задача T3 не завершена: Исправить интерактивный прототип.",
+        "Последняя версия V3 материала M2 не прошла внутреннюю проверку.",
+        "У версии V3 есть открытые замечания: CM2."
+      ]
+    }
+  ],
+  "overdue": {
+    "as_of": "2026-10-31",
+    "order_id": "O1",
+    "tasks": [
+      {
+        "task_id": "T3",
+        "title": "Исправить интерактивный прототип",
+        "order_id": "O1",
+        "stage_id": "S2",
+        "employee_id": "E2",
+        "deadline": "2026-10-30",
+        "days_overdue": 1
+      }
+    ]
+  },
+  "summary": {
+    "as_of": "2026-10-31",
+    "order": {
+      "id": "O1",
+      "client_id": "C1",
+      "title": "Интерактивная инсталляция «История города»",
+      "goal": "Познакомить посетителей с историей района",
+      "audience": "Посетители музея от 12 лет",
+      "format": "Интерактивная инсталляция",
+      "contact": "curator@museum.example",
+      "budget": 350000,
+      "deadline": "2026-11-03",
+      "status": "in_progress"
+    },
+    "client": {
+      "id": "C1",
+      "name": "Музей «Город»",
+      "contact": "office@museum.example"
+    },
+    "team": [
+      {
+        "employee_id": "E1",
+        "name": "Анна Орлова",
+        "project_role": "Дизайнер"
+      },
+      {
+        "employee_id": "E2",
+        "name": "Илья Соколов",
+        "project_role": "Разработчик"
+      },
+      {
+        "employee_id": "E3",
+        "name": "Олег Миронов",
+        "project_role": "Менеджер"
+      }
+    ],
+    "stages": [
+      {
+        "id": "S1",
+        "order_id": "O1",
+        "name": "Подготовка концепции",
+        "status": "in_progress"
+      },
+      {
+        "id": "S2",
+        "order_id": "O1",
+        "name": "Производство инсталляции",
+        "status": "in_progress"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "T1",
+        "stage_id": "S1",
+        "employee_id": "E1",
+        "title": "Подготовить концепцию",
+        "deadline": "2026-10-25",
+        "status": "done",
+        "required": true
+      },
+      {
+        "id": "T2",
+        "stage_id": "S1",
+        "employee_id": "E2",
+        "title": "Оценить техническую реализуемость",
+        "deadline": "2026-10-26",
+        "status": "done",
+        "required": true
+      },
+      {
+        "id": "T3",
+        "stage_id": "S2",
+        "employee_id": "E2",
+        "title": "Исправить интерактивный прототип",
+        "deadline": "2026-10-30",
+        "status": "in_progress",
+        "required": true,
+        "comment_id": "CM2"
+      },
+      {
+        "id": "T4",
+        "stage_id": "S2",
+        "employee_id": "E1",
+        "title": "Подготовить дополнительную анимацию",
+        "deadline": "2026-10-31",
+        "status": "todo",
+        "required": false
+      }
+    ],
+    "materials": [
+      {
+        "id": "M1",
+        "stage_id": "S1",
+        "name": "Презентация концепции"
+      },
+      {
+        "id": "M2",
+        "stage_id": "S2",
+        "name": "Интерактивный прототип"
+      }
+    ],
+    "versions": [
+      {
+        "id": "V1",
+        "material_id": "M1",
+        "number": 1,
+        "url": "https://files.example/concept-v1.pdf",
+        "review_status": "passed"
+      },
+      {
+        "id": "V2",
+        "material_id": "M1",
+        "number": 2,
+        "url": "https://files.example/concept-v2.pdf",
+        "review_status": "passed"
+      },
+      {
+        "id": "V3",
+        "material_id": "M2",
+        "number": 1,
+        "url": "https://files.example/prototype-v1.zip",
+        "review_status": "failed"
+      }
+    ],
+    "approvals": [
+      {
+        "id": "A1",
+        "version_id": "V1",
+        "decision": "changes_requested",
+        "decided_on": "2026-10-24"
+      }
+    ],
+    "comments": [
+      {
+        "id": "CM1",
+        "version_id": "V1",
+        "text": "Уточнить цветовую палитру",
+        "status": "resolved"
+      },
+      {
+        "id": "CM2",
+        "version_id": "V3",
+        "text": "Кнопка запуска не реагирует на нажатие",
+        "status": "open"
+      }
+    ],
+    "overdue_tasks": [
+      {
+        "task_id": "T3",
+        "title": "Исправить интерактивный прототип",
+        "order_id": "O1",
+        "stage_id": "S2",
+        "employee_id": "E2",
+        "deadline": "2026-10-30",
+        "days_overdue": 1
+      }
+    ],
+    "totals": {
+      "stages": 2,
+      "tasks": 4,
+      "done_tasks": 2,
+      "materials": 2,
+      "versions": 3,
+      "approvals": 1,
+      "open_comments": 1,
+      "overdue_tasks": 1
+    }
+  }
+}
