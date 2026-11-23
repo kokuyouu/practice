@@ -41,7 +41,7 @@ public final class JsonDataSource implements CampaignDataSource {
         try (Reader reader = open();
                 JsonReader jsonReader = new JsonReader(reader)) {
             jsonReader.setStrictness(Strictness.STRICT);
-            parsed = JsonParser.parseReader(jsonReader);
+            parsed = readValue(jsonReader);
             if (jsonReader.peek() != JsonToken.END_DOCUMENT) {
                 throw new IllegalArgumentException("после объекта JSON обнаружены лишние данные");
             }
@@ -151,6 +151,38 @@ public final class JsonDataSource implements CampaignDataSource {
             throw new IOException("sample_data.json отсутствует в ресурсах программы");
         }
         return new InputStreamReader(input, StandardCharsets.UTF_8);
+    }
+
+    private JsonElement readValue(JsonReader reader) throws IOException {
+        return switch (reader.peek()) {
+            case BEGIN_OBJECT -> {
+                JsonObject object = new JsonObject();
+                Set<String> names = new HashSet<>();
+                reader.beginObject();
+                while (reader.hasNext()) {
+                    String name = reader.nextName();
+                    if (!names.add(name)) {
+                        throw new IllegalArgumentException(
+                                "повторяющееся поле JSON: '" + name + "' в " + reader.getPath());
+                    }
+                    object.add(name, readValue(reader));
+                }
+                reader.endObject();
+                yield object;
+            }
+            case BEGIN_ARRAY -> {
+                JsonArray array = new JsonArray();
+                reader.beginArray();
+                while (reader.hasNext()) {
+                    array.add(readValue(reader));
+                }
+                reader.endArray();
+                yield array;
+            }
+            case STRING, NUMBER, BOOLEAN, NULL -> JsonParser.parseReader(reader);
+            default -> throw new IllegalArgumentException(
+                    "ожидается значение JSON в " + reader.getPath());
+        };
     }
 
     private Order order(JsonObject row) {

@@ -62,13 +62,7 @@ public class Task {
 
     public void validateContext(CampaignData data) {
         String orderId = data.stage(stageId).orderId();
-        boolean assigned =
-                data.orderMembers().stream()
-                        .anyMatch(
-                                member ->
-                                        member.orderId().equals(orderId)
-                                                && member.employeeId().equals(employeeId));
-        if (!assigned) {
+        if (!data.isOrderMember(orderId, employeeId)) {
             throw new IllegalArgumentException(
                     "tasks: исполнитель " + id + " не входит в команду заказа");
         }

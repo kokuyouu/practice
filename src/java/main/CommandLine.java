@@ -4,6 +4,7 @@ import core.DateValues;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public final class CommandLine {
@@ -18,6 +19,7 @@ public final class CommandLine {
         boolean json = false;
         boolean help = false;
         boolean commandSeen = false;
+        Set<String> suppliedOptions = new LinkedHashSet<>();
         for (int i = 0; i < arguments.length; i++) {
             String argument = arguments[i];
             if (argument.equals("--json")) {
@@ -29,6 +31,7 @@ public final class CommandLine {
                     throw new IllegalArgumentException("нужно значение для " + argument);
                 }
                 String value = arguments[i];
+                suppliedOptions.add(argument);
                 switch (argument) {
                     case "--data" -> data = Path.of(value);
                     case "--order" -> order = value;
@@ -47,6 +50,7 @@ public final class CommandLine {
             }
         }
         if (!help) {
+            validateOptions(command, suppliedOptions);
             if ((command.equals("brief") || command.equals("summary")) && order == null) {
                 throw new IllegalArgumentException("укажите --order");
             }
@@ -58,6 +62,23 @@ public final class CommandLine {
             order = "O1";
         }
         return new Options(command, order, stage, asOf, data, json, help);
+    }
+
+    private static void validateOptions(String command, Set<String> suppliedOptions) {
+        Set<String> allowed =
+                switch (command) {
+                    case "brief" -> Set.of("--order");
+                    case "readiness" -> Set.of("--stage");
+                    case "overdue", "summary", "demo" -> Set.of("--order", "--as-of");
+                    default ->
+                            throw new IllegalArgumentException("неизвестная команда " + command);
+                };
+        for (String option : suppliedOptions) {
+            if (!option.equals("--data") && !allowed.contains(option)) {
+                throw new IllegalArgumentException(
+                        "параметр " + option + " недопустим для команды " + command);
+            }
+        }
     }
 
     public static String usage() {

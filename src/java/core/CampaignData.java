@@ -1,6 +1,10 @@
 package core;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class CampaignData {
@@ -15,6 +19,15 @@ public final class CampaignData {
     private final List<TaskMaterial> taskMaterials;
     private final List<Approval> approvals;
     private final List<Comment> comments;
+
+    private final Map<String, Client> clientsById;
+    private final Map<String, Order> ordersById;
+    private final Map<String, Stage> stagesById;
+    private final Map<String, Task> tasksById;
+    private final Map<String, Material> materialsById;
+    private final Map<String, MaterialVersion> versionsById;
+    private final Map<String, Comment> commentsById;
+    private final Map<String, Set<String>> membersByOrder;
 
     public CampaignData(
             List<Client> clients,
@@ -39,6 +52,21 @@ public final class CampaignData {
         this.taskMaterials = List.copyOf(taskMaterials);
         this.approvals = List.copyOf(approvals);
         this.comments = List.copyOf(comments);
+
+        clientsById = index(this.clients, Client::id);
+        ordersById = index(this.orders, Order::id);
+        stagesById = index(this.stages, Stage::id);
+        tasksById = index(this.tasks, Task::id);
+        materialsById = index(this.materials, Material::id);
+        versionsById = index(this.materialVersions, MaterialVersion::id);
+        commentsById = index(this.comments, Comment::id);
+        Map<String, Set<String>> memberships = new HashMap<>();
+        for (OrderMember member : this.orderMembers) {
+            memberships.computeIfAbsent(member.orderId(), ignored -> new HashSet<>())
+                    .add(member.employeeId());
+        }
+        memberships.replaceAll((orderId, employeesInOrder) -> Set.copyOf(employeesInOrder));
+        membersByOrder = Map.copyOf(memberships);
     }
 
     public List<Client> clients() {
@@ -86,31 +114,38 @@ public final class CampaignData {
     }
 
     public Client client(String id) {
-        return find(clients, id, Client::id, "Клиент");
+        return find(clientsById, id, "Клиент");
     }
 
     public Order order(String id) {
-        return find(orders, id, Order::id, "Заказ");
+        return find(ordersById, id, "Заказ");
     }
 
     public Stage stage(String id) {
-        return find(stages, id, Stage::id, "Этап");
+        return find(stagesById, id, "Этап");
     }
 
     public Task task(String id) {
-        return find(tasks, id, Task::id, "Задача");
+        return find(tasksById, id, "Задача");
     }
 
     public Material material(String id) {
-        return find(materials, id, Material::id, "Материал");
+        return find(materialsById, id, "Материал");
     }
 
     public MaterialVersion version(String id) {
-        return find(materialVersions, id, MaterialVersion::id, "Версия");
+        return find(versionsById, id, "Версия");
     }
 
     public Comment comment(String id) {
-        return find(comments, id, Comment::id, "Замечание");
+        return find(commentsById, id, "Замечание");
+    }
+
+    public boolean isOrderMember(String orderId, String employeeId) {
+        if (orderId == null || employeeId == null) {
+            return false;
+        }
+        return membersByOrder.getOrDefault(orderId, Set.of()).contains(employeeId);
     }
 
     public void validateContext() {
@@ -125,13 +160,19 @@ public final class CampaignData {
         }
     }
 
-    private static <T> T find(
-            List<T> records, String id, Function<T, String> identifier, String entity) {
+    private static <T> Map<String, T> index(List<T> records, Function<T, String> identifier) {
+        Map<String, T> result = new HashMap<>();
         for (T record : records) {
-            if (identifier.apply(record).equals(id)) {
-                return record;
-            }
+            result.putIfAbsent(identifier.apply(record), record);
         }
-        throw new IllegalArgumentException(entity + ": запись '" + id + "' не найдена");
+        return Map.copyOf(result);
+    }
+
+    private static <T> T find(Map<String, T> records, String id, String entity) {
+        T record = id == null ? null : records.get(id);
+        if (record == null) {
+            throw new IllegalArgumentException(entity + ": запись '" + id + "' не найдена");
+        }
+        return record;
     }
 }

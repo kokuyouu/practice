@@ -9,10 +9,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import core.Order;
 import core.BriefRule;
 import core.BriefValidator;
+import core.CampaignData;
+import core.OrderMember;
+import core.Task;
+import core.TaskMaterial;
+import main.JsonDataSource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStreamReader;
@@ -23,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class ContractTest {
     @TempDir private Path directory;
@@ -214,6 +221,132 @@ class ContractTest {
         assertEquals(2, invoke(null, "overdue", "--as-of", "2026-02-30").exitCode());
     }
 
+
+    @ParameterizedTest
+    @CsvSource({
+        "readiness --stage S1 --order O2, --order",
+        "readiness --stage S1 --as-of 2026-10-31, --as-of",
+        "brief --order O1 --stage S1, --stage",
+        "brief --order O1 --as-of 2026-10-31, --as-of",
+        "summary --order O1 --stage S1, --stage",
+        "overdue --stage S1, --stage",
+        "demo --stage S1, --stage",
+        "--order O2 readiness --stage S1, --order"
+    })
+    void incompatibleCommandOptionsAreRejected(String command, String option) throws Exception {
+        Response response = invoke(null, command.split(" "));
+        assertEquals(2, response.exitCode());
+        assertTrue(response.output().isEmpty());
+        assertTrue(response.error().contains(option), response.error());
+        assertTrue(response.error().contains("недопустим"), response.error());
+    }
+
+    @ParameterizedTest
+    @CsvSource({"root, orders", "order, status", "nested, status", "escaped, status"})
+    void duplicateJsonFieldsAreRejectedBeforeReadiness(String location, String field)
+            throws Exception {
+        String input = sample().toString();
+        if (location.equals("root")) {
+            input = "{\"orders\":[]," + input.substring(1);
+        } else if (location.equals("nested")) {
+            input = "{\"extra\":[{\"status\":1,\"status\":2}]," + input.substring(1);
+        } else {
+            String original = "\"status\":\"in_progress\"";
+            int position = input.indexOf(original);
+            assertTrue(position >= 0);
+            String secondName = location.equals("escaped") ? "sta\\u0074us" : "status";
+            // Build raw JSON: JsonObject.add would overwrite the first value itself.
+            input = input.substring(0, position)
+                    + "\"status\":\"completed\",\"" + secondName + "\":\"in_progress\""
+                    + input.substring(position + original.length());
+        }
+        Response response = invokeRaw(input, "readiness", "--stage", "S1");
+        assertEquals(2, response.exitCode());
+        assertTrue(response.output().isEmpty());
+        assertTrue(response.error().contains("повторяющееся поле"), response.error());
+        assertTrue(response.error().contains(field), response.error());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"trailing-document", "trailing-comma", "comment", "missing-end"})
+    void strictJsonSyntaxIsStillRequired(String fault) throws Exception {
+        String input = sample().toString();
+        String invalid = switch (fault) {
+            case "trailing-document" -> input + "{}";
+            case "trailing-comma" -> input.substring(0, input.length() - 1) + ",}";
+            case "comment" -> "/* comment */" + input;
+            case "missing-end" -> input.substring(0, input.length() - 1);
+            default -> throw new IllegalArgumentException(fault);
+        };
+        Response response = invokeRaw(invalid, "readiness", "--stage", "S1");
+        assertEquals(2, response.exitCode());
+        assertTrue(response.output().isEmpty());
+        assertTrue(response.error().startsWith("Ошибка: "));
+    }
+
+    @Test
+    void repeatedFieldNamesInSeparateObjectsAreAllowed() throws Exception {
+        JsonObject input = sample();
+        input.add("extra", JsonParser.parseString("[{\"status\":1},{\"status\":2}]"));
+        assertTrue(json(invoke(input, "readiness", "--stage", "S1")).get("ready").getAsBoolean());
+    }
+
+    @Test
+    void contextValidationDoesNotRescanTasksForEveryMaterialLink() throws Exception {
+        CampaignData original = new JsonDataSource(null).load();
+        Task prototype = original.tasks().get(0);
+        List<Task> tasks = new ArrayList<>();
+        List<TaskMaterial> links = new ArrayList<>();
+        AtomicInteger identifierReads = new AtomicInteger();
+        for (int i = 0; i < 200; i++) {
+            String id = "bulk-" + i;
+            tasks.add(new Task(id, prototype.stageId(), prototype.employeeId(), "Проверка",
+                    prototype.deadline(), "done", true) {
+                @Override
+                public String id() {
+                    identifierReads.incrementAndGet();
+                    return super.id();
+                }
+            });
+            links.add(new TaskMaterial(id, "M1"));
+        }
+        CampaignData data = withTasks(original, tasks, original.orderMembers(), links);
+        identifierReads.set(0);
+        data.validateContext();
+        assertTrue(identifierReads.get() <= tasks.size() * 2,
+                "Повторные поиски по ID: " + identifierReads.get());
+        assertSame(tasks.get(199), data.task("bulk-199"));
+    }
+
+    @Test
+    void contextValidationKeepsMembershipScopedToItsOrder() throws Exception {
+        CampaignData original = new JsonDataSource(null).load();
+        Task task = original.tasks().get(0);
+        CampaignData data = withTasks(original, List.of(task),
+                List.of(new OrderMember("O2", task.employeeId(), "Разработчик")), List.of());
+        var error = assertThrows(IllegalArgumentException.class, data::validateContext);
+        assertEquals("tasks: исполнитель " + task.id() + " не входит в команду заказа",
+                error.getMessage());
+    }
+
+    @Test
+    void indexedLookupsKeepMissingIdentifierDiagnostics() throws Exception {
+        CampaignData data = new JsonDataSource(null).load();
+        assertEquals("Этап: запись 'absent' не найдена",
+                assertThrows(IllegalArgumentException.class, () -> data.stage("absent")).getMessage());
+        assertEquals("Задача: запись 'absent' не найдена",
+                assertThrows(IllegalArgumentException.class, () -> data.task("absent")).getMessage());
+        assertEquals("Материал: запись 'absent' не найдена",
+                assertThrows(IllegalArgumentException.class, () -> data.material("absent")).getMessage());
+    }
+
+    private CampaignData withTasks(CampaignData original, List<Task> tasks,
+            List<OrderMember> members, List<TaskMaterial> links) {
+        return new CampaignData(original.clients(), original.orders(), original.employees(),
+                members, original.stages(), tasks, original.materials(), original.materialVersions(),
+                links, original.approvals(), original.comments());
+    }
+
     private JsonObject sample() throws Exception {
         try (var reader =
                 new InputStreamReader(
@@ -229,11 +362,15 @@ class ContractTest {
     }
 
     private Response invoke(JsonObject input, String... command) throws Exception {
+        return invokeRaw(input == null ? null : input.toString(), command);
+    }
+
+    private Response invokeRaw(String input, String... command) throws Exception {
         var arguments = new ArrayList<String>();
         arguments.add("--json");
         if (input != null) {
             Path file = directory.resolve("data.json");
-            Files.writeString(file, input.toString());
+            Files.writeString(file, input);
             arguments.addAll(List.of("--data", file.toString()));
         }
         arguments.addAll(List.of(command));
