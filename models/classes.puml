@@ -1,0 +1,837 @@
+@startuml classes-01
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Пакеты и направление зависимостей
+package "core" as core {
+  note as coreNote
+    31 исходный файл
+    Сущности, правила, алгоритмы,
+    результаты, сценарии и порты
+    Только стандартная библиотека JDK
+  end note
+}
+package "main" as adapters {
+  note as adaptersNote
+    4 исходных файла
+    Чтение JSON, аргументы CLI,
+    текстовое и JSON-представление
+    Gson - во внешних адаптерах
+  end note
+}
+class Main
+Main ..> core : создаёт и вызывает
+Main ..> adapters : подключает адаптеры
+adapters ..> core : использует типы и порты
+legend bottom
+Физические пакеты соответствуют каталогам src/java/core и src/java/main.
+Main находится в src/java без объявления пакета.
+Стрелка указывает на используемый пакет.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-02
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Сущности заказов и команды
+package "core" {
+class "Client" as Client {
+- id : String
+- name : String
+- contact : String
+--
++ id() : String
++ name() : String
++ contact() : String
+}
+class "Order" as Order {
+- id : String
+- clientId : String
+- title : String
+- goal : String
+- audience : String
+- format : String
+- contact : String
+- budget : Number
+- deadline : String
+- status : String
+--
++ id() : String
++ clientId() : String
++ title() : String
++ goal() : String
++ audience() : String
++ format() : String
++ contact() : String
++ budget() : Number
++ deadline() : String
++ status() : String
++ isClosed() : boolean
+}
+class "Employee" as Employee {
+- id : String
+- name : String
+- specialty : String
+--
++ id() : String
++ name() : String
++ specialty() : String
+}
+class "OrderMember" as OrderMember {
+- orderId : String
+- employeeId : String
+- projectRole : String
+--
++ orderId() : String
++ employeeId() : String
++ projectRole() : String
+}
+class "Stage" as Stage {
+- id : String
+- orderId : String
+- name : String
+- status : String
+--
++ id() : String
++ orderId() : String
++ name() : String
++ status() : String
++ isAccepted() : boolean
+}
+
+
+}
+
+Client "1" -- "0..*" Order : clientId
+Order "1" -- "0..*" Stage : orderId
+Order "1" -- "0..*" OrderMember : orderId
+Employee "1" -- "0..*" OrderMember : employeeId
+legend bottom
+Ассоциации разрешаются по идентификаторам через CampaignData.
+OrderMember - запись связи многие ко многим заказов и
+сотрудников.
+Конструкторы опущены; минус - private, плюс - public.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-03
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Задачи и материалы этапа
+package "core" {
+class "Task" as Task {
+- id : String
+- stageId : String
+- employeeId : String
+- title : String
+- deadline : LocalDate
+- status : String
+- required : boolean
+--
++ id() : String
++ stageId() : String
++ employeeId() : String
++ title() : String
++ deadline() : LocalDate
++ status() : String
++ required() : boolean
++ isUnfinished() : boolean
++ validateContext(CampaignData) : void
+}
+class "ReworkTask" as ReworkTask {
+- commentId : String
+--
++ commentId() : String
++ validateContext(CampaignData) : void
+}
+class "Material" as Material {
+- id : String
+- stageId : String
+- name : String
+--
++ id() : String
++ stageId() : String
++ name() : String
+}
+class "TaskMaterial" as TaskMaterial {
+- taskId : String
+- materialId : String
+--
++ taskId() : String
++ materialId() : String
+}
+class "Stage" as Stage <<ссылка>>
+class "Comment" as Comment <<ссылка>>
+
+
+}
+
+Task <|-- ReworkTask
+Task "1" -- "0..*" TaskMaterial : taskId
+Material "1" -- "0..*" TaskMaterial : materialId
+Stage "1" -- "0..*" Task : stageId
+Stage "1" -- "0..*" Material : stageId
+Comment "1" -- "0..*" ReworkTask : commentId
+legend bottom
+ReworkTask переопределяет validateContext(CampaignData).
+В списке Task проверка вызывается полиморфно.
+TaskMaterial - связь многие ко многим задач и материалов.
+Классы со стереотипом ссылка раскрыты на других листах.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-04
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Версии и результаты согласования
+package "core" {
+class "MaterialVersion" as MaterialVersion {
+- id : String
+- materialId : String
+- number : java.math.BigInteger
+- url : String
+- reviewStatus : String
+--
++ id() : String
++ materialId() : String
++ number() : java.math.BigInteger
++ url() : String
++ reviewStatus() : String
++ passedReview() : boolean
+}
+class "Approval" as Approval {
+- id : String
+- versionId : String
+- decision : String
+- decidedOn : LocalDate
+--
++ id() : String
++ versionId() : String
++ decision() : String
++ decidedOn() : LocalDate
+}
+class "Comment" as Comment {
+- id : String
+- versionId : String
+- text : String
+- status : String
+--
++ id() : String
++ versionId() : String
++ text() : String
++ status() : String
++ isOpen() : boolean
+}
+class "Material" as Material <<ссылка>>
+
+
+}
+
+Material "1" -- "0..*" MaterialVersion : materialId
+MaterialVersion "1" -- "0..*" Approval : versionId
+MaterialVersion "1" -- "0..*" Comment : versionId
+legend bottom
+Решение клиента и замечание относятся к конкретной версии.
+Выбор последней версии использует числовое поле number.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-05
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Снимок данных и вспомогательные значения
+package "core" {
+class "CampaignData" as CampaignData {
+- clients : List<Client>
+- orders : List<Order>
+- employees : List<Employee>
+- orderMembers : List<OrderMember>
+- stages : List<Stage>
+- tasks : List<Task>
+- materials : List<Material>
+- materialVersions : List<MaterialVersion>
+- taskMaterials : List<TaskMaterial>
+- approvals : List<Approval>
+- comments : List<Comment>
+- clientsById : Map<String, Client>
+- ordersById : Map<String, Order>
+- stagesById : Map<String, Stage>
+- tasksById : Map<String, Task>
+- materialsById : Map<String, Material>
+- versionsById : Map<String, MaterialVersion>
+- commentsById : Map<String, Comment>
+- membersByOrder : Map<String, Set<String>>
+--
++ clients() : List<Client>
++ orders() : List<Order>
++ employees() : List<Employee>
++ orderMembers() : List<OrderMember>
++ stages() : List<Stage>
++ tasks() : List<Task>
++ materials() : List<Material>
++ materialVersions() : List<MaterialVersion>
++ taskMaterials() : List<TaskMaterial>
++ approvals() : List<Approval>
++ comments() : List<Comment>
++ client(String) : Client
++ order(String) : Order
++ stage(String) : Stage
++ task(String) : Task
++ material(String) : Material
++ version(String) : MaterialVersion
++ comment(String) : Comment
++ isOrderMember(String, String) : boolean
++ validateContext() : void
+}
+class "DateValues" as DateValues {
+--
++ {static} parse(String) : LocalDate
+}
+class "TextValues" as TextValues {
+--
++ {static} isBlank(String) : boolean
++ {static} compare(String, String) : int
+}
+class "Task" as Task <<ссылка>>
+class "ReworkTask" as ReworkTask <<ссылка>>
+
+
+}
+
+CampaignData "1" o-- "0..*" Task : tasks
+Task <|-- ReworkTask
+legend bottom
+Пустой ромб - агрегация объектов в неизменяемый снимок.
+Аналогично агрегируются остальные десять коллекций.
+Объекты с самостоятельными ID могут существовать вне снимка.
+Семь Map индексируют сущности; membersByOrder хранит Set сотрудников.
+Индексы создаются один раз; поиск не обходит исходные списки.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-06
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Правила брифа и алгоритмы
+package "core" {
+interface "BriefRule" as BriefRule <<interface>> {
+--
++ validate(Order) : List<String>
+}
+class "RequiredTextRule" as RequiredTextRule {
+- field : Function<Order, String>
+- label : String
+--
++ validate(Order) : List<String>
+}
+class "PositiveBudgetRule" as PositiveBudgetRule {
+--
++ validate(Order) : List<String>
+}
+class "DeadlineRule" as DeadlineRule {
+--
++ validate(Order) : List<String>
+}
+class "BriefValidator" as BriefValidator {
+- rules : List<BriefRule>
+--
++ check(Order) : BriefResult
+}
+class "StageReadinessChecker" as StageReadinessChecker {
+--
++ check(CampaignData, String) : ReadinessResult
+}
+class "OverdueTaskFinder" as OverdueTaskFinder {
+--
++ find(CampaignData, LocalDate, String) : OverdueResult
+}
+class "DateValues" as DateValues <<ссылка>>
+class "TextValues" as TextValues <<ссылка>>
+
+
+}
+
+BriefRule <|.. RequiredTextRule
+BriefRule <|.. PositiveBudgetRule
+BriefRule <|.. DeadlineRule
+BriefValidator "1" o-- "0..*" BriefRule : rules
+DeadlineRule ..> DateValues
+RequiredTextRule ..> TextValues
+DeadlineRule -[hidden]down-> StageReadinessChecker
+StageReadinessChecker -[hidden]down-> OverdueTaskFinder
+legend bottom
+BriefValidator вызывает все переданные правила через BriefRule.
+Сервисы возвращают типизированные результаты из пакета core.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-07
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Результаты проверок
+package "core" {
+interface "OperationResult" as OperationResult <<interface>> {
+--
+}
+class "BriefResult" as BriefResult <<record>> {
+- orderId : String
+- complete : boolean
+- errors : List<String>
+--
++ orderId() : String
+}
+class "ReadinessResult" as ReadinessResult <<record>> {
+- stageId : String
+- orderId : String
+- ready : boolean
+- requiredTasks : int
+- checkedMaterials : int
+- versions : List<ReadinessResult.VersionSelection>
+- blockers : List<String>
+--
++ stageId() : String
+}
+class "ReadinessResult.VersionSelection" as ReadinessResult_VersionSelection <<record>> {
+- materialId : String
+- versionId : String
+--
++ materialId() : String
+}
+class "OverdueResult" as OverdueResult <<record>> {
+- asOf : String
+- orderId : String
+- tasks : List<OverdueResult.Item>
+--
++ asOf() : String
+}
+class "OverdueResult.Item" as OverdueResult_Item <<record>> {
+- taskId : String
+- title : String
+- orderId : String
+- stageId : String
+- employeeId : String
+- deadline : String
+- daysOverdue : long
+--
++ taskId() : String
+}
+
+
+}
+
+BriefResult -[hidden]down-> ReadinessResult
+ReadinessResult -[hidden]down-> OverdueResult
+OperationResult <|.. BriefResult
+OperationResult <|.. ReadinessResult
+OperationResult <|.. OverdueResult
+ReadinessResult "1" -- "0..*" ReadinessResult_VersionSelection : versions
+OverdueResult "1" -- "0..*" OverdueResult_Item : tasks
+legend bottom
+record создаёт закрытые final поля и публичные методы чтения.
+Приведён пример метода чтения record; остальные методы чтения,
+конструкторы и стандартные методы Object опущены.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-08
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Сводка заказа и демонстрация
+package "core" {
+class "OrderSummary" as OrderSummary <<record>> {
+- asOf : String
+- order : Order
+- client : Client
+- team : List<OrderSummary.TeamMember>
+- stages : List<Stage>
+- tasks : List<Task>
+- materials : List<Material>
+- versions : List<MaterialVersion>
+- approvals : List<Approval>
+- comments : List<Comment>
+- overdueTasks : List<OverdueResult.Item>
+- totals : OrderSummary.Totals
+--
++ asOf() : String
+}
+class "OrderSummary.TeamMember" as OrderSummary_TeamMember <<record>> {
+- employeeId : String
+- name : String
+- projectRole : String
+--
++ employeeId() : String
+}
+class "OrderSummary.Totals" as OrderSummary_Totals <<record>> {
+- stages : int
+- tasks : int
+- doneTasks : long
+- materials : int
+- versions : int
+- approvals : int
+- openComments : long
+- overdueTasks : int
+--
++ stages() : int
+}
+class "DemoResult" as DemoResult <<record>> {
+- brief : BriefResult
+- readiness : List<ReadinessResult>
+- overdue : OverdueResult
+- summary : OrderSummary
+--
++ brief() : BriefResult
+}
+interface "OperationResult" as OperationResult <<interface, ссылка>>
+
+
+}
+
+OperationResult <|.. OrderSummary
+OperationResult <|.. DemoResult
+OrderSummary "1" -- "0..*" OrderSummary_TeamMember : team
+OrderSummary "1" -- "1" OrderSummary_Totals : totals
+DemoResult "1" --> "1" OrderSummary : summary
+legend bottom
+Типы сущностей в OrderSummary раскрыты на листах 2-4.
+Типы BriefResult ReadinessResult OverdueResult раскрыты на
+листе 7.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-09
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Сценарии приложения и порты
+package "core" {
+class "CampaignService" as CampaignService {
+- data : CampaignData
+- briefValidator : BriefValidator
+- readinessChecker : StageReadinessChecker
+- overdueFinder : OverdueTaskFinder
+--
++ checkBrief(String) : BriefResult
++ checkStageReadiness(String) : ReadinessResult
++ findOverdueTasks(LocalDate, String) : OverdueResult
++ buildOrderSummary(String, LocalDate) : OrderSummary
++ demo(String, LocalDate) : DemoResult
+}
+interface "CampaignDataSource" as CampaignDataSource <<interface>> {
+--
++ load() : CampaignData
+}
+interface "ResultPresenter" as ResultPresenter <<interface>> {
+--
++ present(OperationResult) : String
+}
+class "CampaignData" as CampaignData <<ссылка>>
+class "BriefValidator" as BriefValidator <<ссылка>>
+class "StageReadinessChecker" as StageReadinessChecker <<ссылка>>
+class "OverdueTaskFinder" as OverdueTaskFinder <<ссылка>>
+
+
+}
+class "Main" as Main <<ссылка>>
+
+CampaignService "1" --> "1" CampaignData : data
+Main ..> CampaignService : вызывает сценарий
+CampaignService -[hidden]down-> CampaignDataSource
+CampaignDataSource -[hidden]down-> ResultPresenter
+CampaignService "1" --> "1" BriefValidator
+CampaignService "1" --> "1" StageReadinessChecker
+CampaignService "1" --> "1" OverdueTaskFinder
+legend bottom
+Main создаёт зависимости и передаёт их конструкторам.
+CampaignService не использует Gson консоль и файловые пути.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-10
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Внешние адаптеры
+package "main" as MainAdapters {
+class "JsonDataSource" as JsonDataSource {
+- file : Path
+- original : JsonObject
+--
++ load() : CampaignData
++ originalData() : JsonObject
+- readValue(JsonReader) : JsonElement
+}
+class "JsonResultPresenter" as JsonResultPresenter {
+- gson : Gson
+- originalRows : Map<String, Map<String, JsonObject>>
+--
++ present(OperationResult) : String
+}
+class "TextResultPresenter" as TextResultPresenter {
+--
++ present(OperationResult) : String
+}
+
+
+class "JsonDataSource.Reference" as JsonDataSource_Reference <<record>> {
+- table : String
+- field : String
+- target : String
+--
++ table() : String
+}
+
+
+
+}
+package "core" as CorePorts {
+interface "CampaignDataSource" as CampaignDataSource <<interface, ссылка>>
+interface "ResultPresenter" as ResultPresenter <<interface, ссылка>>
+interface "OperationResult" as OperationResult <<interface, ссылка>>
+}
+
+JsonDataSource -[hidden]down-> JsonResultPresenter
+JsonResultPresenter -[hidden]down-> TextResultPresenter
+CampaignDataSource <|.. JsonDataSource
+ResultPresenter <|.. JsonResultPresenter
+ResultPresenter <|.. TextResultPresenter
+JsonDataSource ..> JsonDataSource_Reference : проверка ссылок
+JsonResultPresenter ..> OperationResult
+TextResultPresenter ..> OperationResult
+MainAdapters -[hidden]down-> CorePorts
+CampaignDataSource -[hidden]down-> ResultPresenter
+ResultPresenter -[hidden]down-> OperationResult
+legend bottom
+Показаны поля, публичные операции и readValue.
+Прочие приватные методы форматирования и проверки опущены.
+readValue отклоняет повторные имена полей до создания объектов.
+TextResultPresenter и JsonResultPresenter используются через
+один порт.
+endlegend
+@enduml
+
+
+
+
+@startuml classes-11
+!pragma layout smetana
+skinparam monochrome true
+skinparam shadowing false
+skinparam dpi 180
+skinparam defaultFontName "Arial"
+skinparam defaultFontSize 14
+skinparam classAttributeIconSize 0
+skinparam classBackgroundColor white
+skinparam packageBackgroundColor white
+skinparam legendBackgroundColor white
+skinparam classBorderColor black
+skinparam ArrowColor black
+skinparam NoteBackgroundColor white
+skinparam NoteBorderColor black
+skinparam nodesep 36
+skinparam ranksep 45
+hide circle
+title Точка входа и командная строка
+package "main" {
+class "CommandLine" as CommandLine {
+--
++ {static} parse(String[]) : CommandLine.Options
++ {static} usage() : String
+- {static} validateOptions(String, Set<String>) : void
+}
+class "CommandLine.Options" as CommandLine_Options <<record>> {
+- command : String
+- order : String
+- stage : String
+- asOf : String
+- data : Path
+- json : boolean
+- help : boolean
+--
++ date() : LocalDate
++ command() : String
+}
+
+}
+class "Main" as Main {
+--
++ {static} main(String[]) : void
++ run(String[], PrintStream, PrintStream) : int
+}
+
+Main ..> CommandLine : parse
+CommandLine ..> CommandLine_Options : создаёт
+@enduml
